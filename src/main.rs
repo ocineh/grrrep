@@ -1,4 +1,4 @@
-use std::{env, fs, process};
+use std::{env, fs, process, error::Error};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -11,14 +11,18 @@ fn main() {
     println!("Searching for {}", config.query);
     println!("In file {}", config.filename);
 
-    run(config);
+    if let Err(e) = run(config) {
+        println!("Application error: {}", e);
+        process::exit(2);
+    }
 }
-
-fn run(config: Config) {
-    let contents = fs::read_to_string(config.filename)
-        .expect("Something went wrong reading the file");
+// returns either OK or Err with a type with the Error trait
+fn run(config: Config) -> Result<(), Box<dyn Error>> {
+    // if fs::read_to_string returns an Err it is directly returned as the result of the run function thanks to the ?
+    let contents = fs::read_to_string(config.filename)?;
 
     println!("With text:\n{}", contents);
+    Ok(())
 }
 
 struct Config {
