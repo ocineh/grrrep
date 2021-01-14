@@ -1,4 +1,4 @@
-use std::{error::Error, fs};
+use std::{error::Error, fs, env};
 
 pub struct Config {
     pub query: String,
@@ -7,18 +7,19 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn new(args: &[String]) -> Result<Config, &'static str> {
-        let mut args = Vec::from(args);
+    pub fn new(args: env::Args) -> Result<Config, &'static str> {
+        let (args, options): (Vec<String>, Vec<String>) = args.into_iter()
+            .partition(|x| x.chars().next().unwrap() != '-');
+        let argument_available = ["-i", "--ignore-case"];
+        let mut case_sensitive= true;
 
-        // if environment variable is not set then it will do a case sensitive search
-        let case_sensitive = if let Some(index) = args.iter().position(|v| v == &"-i".to_string() || v == &"--ignore-case".to_string()) {
-            args.remove(index);
-            false
-        } else {
-            true
-        };
+        if options.iter().filter(|x| !argument_available.contains(&&***x)).collect::<Vec<_>>().len() > 0 { return Err("invalid option"); }
+        if args.len() < 2 { return Err("not enough arguments"); }
 
-        if args.len() < 3 { return Err("not enough arguments"); }
+        for opt in options {
+            case_sensitive = if opt == "-i" || opt == "--ignore-case" { false } else { true };
+        }
+
         let query = args[1].clone();
         let filename = args[2].clone();
 
