@@ -1,5 +1,5 @@
 # mini grep
-**Version 0.0.1**
+**Version 0.0.5**
 
 this is a simplified version of the grep command done in rust, this is one of the practical work in the rust course that I am following.
 
