@@ -1,14 +1,28 @@
-use std::{fs, error::Error};
+use std::{error::Error, fs};
 
 pub struct Config {
     pub query: String,
     pub filename: String,
+    pub case_sensitive: bool,
 }
 
 impl Config {
     pub fn new(args: &[String]) -> Result<Config, &'static str> {
+        let mut args = Vec::from(args);
+
+        // if environment variable is not set then it will do a case sensitive search
+        let case_sensitive = if let Some(index) = args.iter().position(|v| v == &"-i".to_string() || v == &"--ignore-case".to_string()) {
+            args.remove(index);
+            false
+        } else {
+            true
+        };
+
         if args.len() < 3 { return Err("not enough arguments"); }
-        Ok(Config { query: args[1].clone(), filename: args[2].clone() })
+        let query = args[1].clone();
+        let filename = args[2].clone();
+
+        Ok(Config { query, filename, case_sensitive })
     }
 }
 
@@ -17,7 +31,13 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     // if fs::read_to_string returns an Err it is directly returned as the result of the run function thanks to the ?
     let contents = fs::read_to_string(config.filename)?;
 
-    for line in search(&config.query, &contents) {
+    let results = if config.case_sensitive {
+        search(&config.query, &contents)
+    } else {
+        search_case_insensitive(&config.query, &contents)
+    };
+
+    for line in results {
         println!("{}", line);
     }
     Ok(())
@@ -67,7 +87,7 @@ mod tests {
         assert_eq!(vec!["Rust:", "safe, fast, productive"], search(query, contents));
     }
     #[test]
-    fn seach_case_insensitive_test() {
+    fn search_insensitive_test() {
         let query = "rUsT";
         let contents = "\nRust:\nsafe, fast, productive\nPick three.\nTrust me.";
         assert_eq!(vec!["Rust:", "Trust me."], search_case_insensitive(query, contents));
