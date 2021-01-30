@@ -1,14 +1,14 @@
-use std::{env, process};
-use mini_grep::Config;
+use mini_grep::{run, Cli};
+use structopt::StructOpt;
 
 fn main() {
-    let config = Config::new(env::args()).unwrap_or_else(|err| {
-        eprintln!("Problem parsing arguments: {}", err);
-        process::exit(1);
-    });
+    let args = Cli::from_args();
 
-    if let Err(e) = mini_grep::run(config) {
-        eprintln!("Application error: {}", e);
-        process::exit(2);
+    match run(args){
+        Ok(_) => { println!("Finished successfully") }
+        Err(err) => {
+            println!("Error: {}", err);
+            std::process::exit(1);
+        }
     }
 }

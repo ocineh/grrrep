@@ -1,12 +1,12 @@
 # mini grep
-**Version 0.0.5**
+**Version 0.1.0**
 
 this is a simplified version of the grep command done in rust, this is one of the practical work in the rust course that I am following.
 
 ## Usage
 To use mini-grep you need to run the command with two arguments the first being text and the second being the file to look for the text in, example :
 ```bash
-mini_grep [-i] <text> <filename>
+mini_grep.exe [OPTIONS] <pattern> <path>
 ```
 These are all the options available at the moment
 ```
