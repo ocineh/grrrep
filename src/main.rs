@@ -1,5 +1,5 @@
-use mini_grep::{run, Cli};
 use structopt::StructOpt;
+use grrrep::{run, Cli};
 
 fn main() {
     let args = Cli::from_args();

@@ -1,16 +1,16 @@
-# mini grep
-**Version 0.1.0**
+# grrrep
+**Version 0.1.1**
 
 this is a simplified version of the grep command done in rust, this is one of the practical work in the rust course that I am following.
 
 ## Usage
 To use mini-grep you need to run the command with two arguments the first being text and the second being the file to look for the text in, example :
 ```bash
-mini_grep.exe [FLAGS] [OPTIONS] <pattern> <path>
+grrrep [FLAGS] [OPTIONS] <pattern> <path>
 ```
 to see grep options, flag and argument :
 ```bash
-mini_grep --help
+grrrep --help
 ```
 ## Contributors
 
