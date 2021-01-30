@@ -1,5 +1,6 @@
 use std::{error::Error, fs};
 use structopt::StructOpt;
+use std::io::Write;
 
 #[derive(StructOpt, Debug)]
 pub struct Cli {
@@ -8,6 +9,9 @@ pub struct Cli {
     path: std::path::PathBuf,
     #[structopt(short, long)]
     ignore_case: bool,
+    #[structopt(short, long)]
+    #[allow(clippy::option_option)]
+    output: Option<String>,
 }
 
 // returns either OK or Err with a type with the Error trait
@@ -20,6 +24,19 @@ pub fn run(args: Cli) -> Result<(), Box<dyn Error>> {
     } else {
         search(&args.pattern, &contents)
     };
+
+    // write the result to the file if it is specified with the -o or --output flag
+    if let Some(out) = args.output {
+        let mut output = fs::File::create(&out)?;
+        results.iter().cloned().try_for_each(|a| {
+            match output.write((a.to_owned() + "\n").as_bytes()) {
+                Ok(_) => Ok(()),
+                Err(err) => Err(err),
+            }
+        })?;
+        println!("Search result was saved in the file: {}", out);
+        return Ok(());
+    }
 
     for line in results {
         println!("{}", line);

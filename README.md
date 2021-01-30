@@ -6,12 +6,11 @@ this is a simplified version of the grep command done in rust, this is one of th
 ## Usage
 To use mini-grep you need to run the command with two arguments the first being text and the second being the file to look for the text in, example :
 ```bash
-mini_grep.exe [OPTIONS] <pattern> <path>
+mini_grep.exe [FLAGS] [OPTIONS] <pattern> <path>
 ```
-These are all the options available at the moment
-```
-Pattern selection :
--i, --ignore-case       ignore case distinctions in patterns and data
+to see grep options, flag and argument :
+```bash
+mini_grep --help
 ```
 ## Contributors
 
